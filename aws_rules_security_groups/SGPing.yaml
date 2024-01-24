@@ -1,0 +1,15 @@
+SGPing:
+  Type: AWS::EC2::SecurityGroup
+  DependsOn: VPC
+  Properties:
+    GroupDescription: SG to test ping
+    VpcId: !Ref VPC
+    SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 177.206.86.197/32
+      - IpProtocol: icmp
+        FromPort: 8
+        ToPort: -1
+        CidrIp: 177.206.86.197/32
