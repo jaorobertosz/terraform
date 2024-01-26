@@ -1,6 +1,6 @@
 variable "availability_zone_names" {
   type    = string
-  default = "us-east-1"
+  default = "us-east-2"
 }
 variable "server_port_http" {
   description = "porta_web_server"
@@ -14,7 +14,7 @@ variable "server_port_https" {
 }
 variable "image_id" {
   description = "Valor da imagem"
-  default     = "ami-06aa3f7caf3a30282"
+  default     = "ami-0ec3d9efceafb89e0"
   type        = string
 }
 variable "instance_type" {
@@ -22,4 +22,18 @@ variable "instance_type" {
   default     = "t2.nano"
   type        = string
 }
-
+variable "aws_security_group" {
+  description = "Security Group"
+  default     = "sg-04f803cf48c274f87"
+  type        = string
+}
+variable "aws_vpc" {
+  description = "VPC instance"
+  default     = "vpc-0e79dfde324377b37"
+  type        = string
+}
+variable "aws_subnet" {
+  description = "Subnet Us-east2-a"
+  default     = "subnet-0b44e6f8ea32cf5f5"
+  type        = string
+}

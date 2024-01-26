@@ -15,15 +15,16 @@ provider "aws" {
 
 resource "aws_key_pair" "deployer" {
   key_name   = "aws_key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9RNzZ+TK0i++Ya04dKVrl7w6Thxh6kD9DABLIw+MBjXGgdh3/dmfsEkOyfv3VfOg4wIlvg/dZibvm7SM336BvK67ih+qQlqE76ZfRt0og0r7W0lWaWbr6ToPe+yx5J4sIdhj8PGTjgqysSyb0xB39GTkaGFz27PnXOMD8irWd+sJkHXhYlyRRKvabnYSV7Qc3p1kndIkG9evBWFKWeFK8XNgOiW11zQaVbJXn7biDD0xfm46Yqh9H9NJGFpTlHDVyzIwRaxFf3J7uqZ0brE7ScoB3Q9wHDT3QKraZQJs/Mr23sfUVVqIqMYsaxFY4loJaz4AxpddJx8tcsp3rRSrJ souza@UBN-LNX"
+  public_key = file("/terraform/EC2/aws_key.pub")
 }
 
 resource "aws_instance" "teste_servidor" {
   ami                    = var.image_id
   instance_type          = var.instance_type
-  subnet_id              = aws_subnet.public_subnet.id
-  vpc_security_group_ids = [aws_security_group.instance.id]
-  key_name               = aws_key_pair.deployer.key_name
+  subnet_id              = var.aws_subnet
+  vpc_security_group_ids = [var.aws_security_group]
+  key_name               = aws_key_pair.deployer.id
+
 
   user_data = <<-EOF
   #!/bin/bash
@@ -42,4 +43,9 @@ resource "aws_instance" "teste_servidor" {
   tags = {
     Name = "UbuntuTeste"
   }
+}
+
+resource "aws_eip" "static_ip" {
+  instance = aws_instance.teste_servidor.id
+  domain = "vpc"
 }

@@ -6,3 +6,7 @@ output "user_data" {
   value       = aws_instance.teste_servidor.user_data
   description = "USER-DATA"
 }
+output "subnet_id" {
+  value = var.aws_subnet
+  description = "Subnet"
+}
