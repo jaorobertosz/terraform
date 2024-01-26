@@ -12,44 +12,10 @@ terraform {
 provider "aws" {
   region = var.availability_zone_names
 }
-resource "aws_vpc" "vpc_test" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true
-}
-
-resource "aws_subnet" "public_subnet" {
-  vpc_id     = aws_vpc.vpc_test.id
-  cidr_block = "10.0.1.0/24"
-
-}
-resource "aws_subnet" "private_subnet" {
-  vpc_id     = aws_vpc.vpc_test.id
-  cidr_block = "10.0.2.0/24"
-
-}
-
-resource "aws_security_group" "instance" {
-  name   = "teste_servidor"
-  vpc_id = aws_vpc.vpc_test.id
-
-  ingress {
-    from_port   = var.server_port_http
-    to_port     = var.server_port_http
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
 
 resource "aws_key_pair" "deployer" {
-  key_name   = "aws_key.pub"
-  public_key = file("/home/terraform/EC2/aws_key.pub")
+  key_name   = "aws_key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9RNzZ+TK0i++Ya04dKVrl7w6Thxh6kD9DABLIw+MBjXGgdh3/dmfsEkOyfv3VfOg4wIlvg/dZibvm7SM336BvK67ih+qQlqE76ZfRt0og0r7W0lWaWbr6ToPe+yx5J4sIdhj8PGTjgqysSyb0xB39GTkaGFz27PnXOMD8irWd+sJkHXhYlyRRKvabnYSV7Qc3p1kndIkG9evBWFKWeFK8XNgOiW11zQaVbJXn7biDD0xfm46Yqh9H9NJGFpTlHDVyzIwRaxFf3J7uqZ0brE7ScoB3Q9wHDT3QKraZQJs/Mr23sfUVVqIqMYsaxFY4loJaz4AxpddJx8tcsp3rRSrJ souza@UBN-LNX"
 }
 
 resource "aws_instance" "teste_servidor" {
@@ -67,7 +33,7 @@ resource "aws_instance" "teste_servidor" {
               sudo bash -c 'echo Hello World run on port ${var.server_port_http}> /var/www/html/index.html'
               EOF
 
-  user_data_replace_on_change = false
+  user_data_replace_on_change = true
   monitoring                  = false
   disable_api_termination     = false
   ebs_optimized               = false
@@ -76,22 +42,4 @@ resource "aws_instance" "teste_servidor" {
   tags = {
     Name = "UbuntuTeste"
   }
-}
-resource "aws_security_group_rule" "acesso-ssh" {
-  type              = "ingress"
-  from_port         = 22
-  to_port           = 22
-  protocol          = "tcp"
-  cidr_blocks       = ["177.206.86.197/32"]
-  ipv6_cidr_blocks  = []
-  security_group_id = aws_security_group.instance.id
-}
-resource "aws_security_group_rule" "trafego-https" {
-  type              = "ingress"
-  from_port         = var.server_port_https
-  to_port           = var.server_port_https
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = []
-  security_group_id = aws_security_group.instance.id
 }
