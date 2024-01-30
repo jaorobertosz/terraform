@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 5.8.0"
     }
   }
 }
@@ -17,7 +17,16 @@ resource "aws_key_pair" "deployer" {
   key_name   = "aws_key"
   public_key = file("/terraform/EC2/aws_key.pub")
 }
+resource "aws_eip" "associate_public_ip_address" {
+  instance = aws_instance.teste_servidor.id
+  domain = "vpc"
+}
 
+resource "null_resource" "executar_script" {
+  depends_on = [
+    aws_instance.teste_servidor
+  ]
+}
 resource "aws_instance" "teste_servidor" {
   ami                    = var.image_id
   instance_type          = var.instance_type
@@ -25,27 +34,35 @@ resource "aws_instance" "teste_servidor" {
   vpc_security_group_ids = [var.aws_security_group]
   key_name               = aws_key_pair.deployer.id
 
-
-  user_data = <<-EOF
-  #!/bin/bash
-              sudo apt update -y
-              sudo apt install apache2 -y
-              sudo systemctl start apache2
-              sudo bash -c 'echo Hello World run on port ${var.server_port_http}> /var/www/html/index.html'
-              EOF
-
   user_data_replace_on_change = true
   monitoring                  = false
   disable_api_termination     = false
   ebs_optimized               = false
   associate_public_ip_address = true
 
+  provisioner "file" {
+    source      = "/terraform/EC2/instalação-docker.sh"
+    destination = "instalação-docker.sh"
+  }
+  connection {
+    type        = "ssh"
+    host        = self.public_ip
+    user        = "ubuntu"
+    private_key = file("/terraform/EC2/aws_key")
+    timeout     = "1m"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod u+x instalação-docker.sh",
+      "./instalação-docker.sh"
+    ]
+  }
+  
   tags = {
     Name = "UbuntuTeste"
   }
-}
 
-resource "aws_eip" "static_ip" {
-  instance = aws_instance.teste_servidor.id
-  domain = "vpc"
+  timeouts {
+    create = "10m"
+  }
 }
