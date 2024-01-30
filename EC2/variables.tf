@@ -14,7 +14,7 @@ variable "server_port_https" {
 }
 variable "image_id" {
   description = "Valor da imagem"
-  default     = "ami-0ec3d9efceafb89e0"
+  default     = "ami-05fb0b8c1424f266b"
   type        = string
 }
 variable "instance_type" {
@@ -29,11 +29,32 @@ variable "aws_security_group" {
 }
 variable "aws_vpc" {
   description = "VPC instance"
-  default     = "vpc-0e79dfde324377b37"
-  type        = string
+  default     = true
+  type        = bool
 }
 variable "aws_subnet" {
   description = "Subnet Us-east2-a"
   default     = "subnet-0b44e6f8ea32cf5f5"
   type        = string
+}
+variable "network_interface" {
+  description = "ENI to associate with EIP."
+  type        = string
+  default     = null
+}
+variable "associate_with_private_ip" {
+  description = "Private IP to associate with EIP."
+  type        = string
+  default     = null
+}
+variable "tags" {
+  description = "Tags to associate with ENI."
+  type        = map(string)
+  default     = {}
+}
+
+variable "public_ipv4_pool" {
+  description = "IP pool to use (or 'amazon'.)"
+  type        = string
+  default     = "amazon"
 }
