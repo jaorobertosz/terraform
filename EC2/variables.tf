@@ -27,34 +27,8 @@ variable "aws_security_group" {
   default     = "sg-04f803cf48c274f87"
   type        = string
 }
-variable "aws_vpc" {
-  description = "VPC instance"
-  default     = true
-  type        = bool
-}
 variable "aws_subnet" {
   description = "Subnet Us-east2-a"
   default     = "subnet-0b44e6f8ea32cf5f5"
   type        = string
-}
-variable "network_interface" {
-  description = "ENI to associate with EIP."
-  type        = string
-  default     = null
-}
-variable "associate_with_private_ip" {
-  description = "Private IP to associate with EIP."
-  type        = string
-  default     = null
-}
-variable "tags" {
-  description = "Tags to associate with ENI."
-  type        = map(string)
-  default     = {}
-}
-
-variable "public_ipv4_pool" {
-  description = "IP pool to use (or 'amazon'.)"
-  type        = string
-  default     = "amazon"
 }
