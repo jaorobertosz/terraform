@@ -7,6 +7,6 @@ output "user_data" {
   description = "USER-DATA"
 }
 output "subnet_id" {
-  value = var.aws_subnet
+  value       = var.aws_subnet
   description = "Subnet"
 }

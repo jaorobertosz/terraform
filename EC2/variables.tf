@@ -14,7 +14,7 @@ variable "server_port_https" {
 }
 variable "image_id" {
   description = "Valor da imagem"
-  default     = "ami-0ec3d9efceafb89e0"
+  default     = "ami-05fb0b8c1424f266b"
   type        = string
 }
 variable "instance_type" {
@@ -25,11 +25,6 @@ variable "instance_type" {
 variable "aws_security_group" {
   description = "Security Group"
   default     = "sg-04f803cf48c274f87"
-  type        = string
-}
-variable "aws_vpc" {
-  description = "VPC instance"
-  default     = "vpc-0e79dfde324377b37"
   type        = string
 }
 variable "aws_subnet" {
