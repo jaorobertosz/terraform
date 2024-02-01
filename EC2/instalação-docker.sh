@@ -42,5 +42,3 @@ echo \
     sudo systemctl enable docker.service
      sudo systemctl enable containerd.service
      echo "Finalizado instalação do Docker"
-
-
