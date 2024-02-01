@@ -15,18 +15,20 @@ provider "aws" {
 
 resource "aws_key_pair" "deployer" {
   key_name   = "aws_key"
-  public_key = file("/home/souza/terraform/EC2/aws_key.pub")
-}
-resource "aws_eip" "associate_public_ip_address" {
-  instance = aws_instance.teste_servidor.id
-  domain   = "vpc"
+  public_key = file("/terraform/EC2/aws_key.pub")
 }
 
-resource "null_resource" "executar_script" {
-  depends_on = [
-    aws_instance.teste_servidor
-  ]
+resource "aws_eip" "aws_eip" {
+  domain = "vpc"
 }
+
+resource "aws_eip_association" "aws_eip_association" {
+  instance_id         = aws_instance.teste_servidor.id
+  allow_reassociation = true
+  allocation_id       = "eipalloc-0111bcf764ff47928"
+}
+
+
 resource "aws_instance" "teste_servidor" {
   ami                    = var.image_id
   instance_type          = var.instance_type
@@ -40,29 +42,37 @@ resource "aws_instance" "teste_servidor" {
   ebs_optimized               = false
   associate_public_ip_address = true
 
-  provisioner "file" {
-    source      = "/home/souza/terraform/EC2/docker.py"
-    destination = "docker.py"
-  }
-
-  connection {
-    type        = "ssh"
-    host        = self.public_ip
-    user        = "ubuntu"
-    private_key = file("/home/souza/terraform/EC2/aws_key")
-    timeout     = "1m"
-  }
-  provisioner "remote-exec" {
-    inline = [
-      "python3 docker.py"
-    ]
-  }
-
   tags = {
     Name = "UbuntuTeste"
   }
 
   timeouts {
     create = "10m"
+  }
+}
+
+resource "null_resource" "exec_python" {
+
+  connection {
+    type        = "ssh"
+    host        = "3.141.203.83"
+    user        = "ubuntu"
+    private_key = file("/terraform/EC2/aws_key")
+    timeout     = "5m"
+  }
+
+  provisioner "file" {
+    source      = "/terraform/EC2/docker.py"
+    destination = "docker.py"
+  }
+  
+  provisioner "file" {
+    source      = "/terraform/Docker"
+    destination = "/home/ubuntu/Docker"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "python3 docker.py",
+    ]
   }
 }

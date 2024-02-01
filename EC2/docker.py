@@ -13,7 +13,7 @@ def main():
     print("Iniciando Alteração de nome")
     run_command(f'echo "{os.getenv("USER")}" | sudo -S hostname; echo "Nome da maquina {NOME}"; sudo -S hostnamectl set-hostname {SRV}; echo "Nome da instancia alterado para {SRV}"; sudo -S hostname; echo "Nome da maquina {SRV}"')
     print("Instalando pacotes WGET, CURL, GIT, VIM, NET-TOOLS")
-    run_command('DEBIAN_FRONTEND=noninteractive sudo apt install -y wget curl git vim net-tools')
+    run_command('DEBIAN_FRONTEND=noninteractive sudo apt install -y wget curl git vim')
     print("ADICIONANDO REPOSITORIO DOCKER")
     run_command('sudo apt-get install ca-certificates curl')
     run_command('sudo install -m 0755 -d /etc/apt/keyrings')
@@ -46,6 +46,7 @@ def main():
     run_command(f'sudo chown "$USER":"$USER" {docker_config_dir} -R ; chmod g+rwx "{docker_config_dir}" -R; sudo usermod -aG docker "$USER"; newgrp docker')
     run_command('docker login')
     print("Login no Docker realizado com sucesso")
+    run_command(f'reboot')
 
 if __name__ == "__main__":
     main()

@@ -2,10 +2,18 @@ variable "availability_zone_names" {
   type    = string
   default = "us-east-2"
 }
+variable "availabilityZone" {
+  default = "us-east-2a"
+}
 variable "server_port_http" {
   description = "porta_web_server"
   type        = number
   default     = 80
+}
+variable "server_port_ssh" {
+  description = "porta_ssh_server"
+  type        = number
+  default     = 22
 }
 variable "server_port_https" {
   description = "porta_https_server"
