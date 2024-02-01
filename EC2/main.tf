@@ -15,11 +15,11 @@ provider "aws" {
 
 resource "aws_key_pair" "deployer" {
   key_name   = "aws_key"
-  public_key = file("/terraform/EC2/aws_key.pub")
+  public_key = file("/home/souza/terraform/EC2/aws_key.pub")
 }
 resource "aws_eip" "associate_public_ip_address" {
   instance = aws_instance.teste_servidor.id
-  domain = "vpc"
+  domain   = "vpc"
 }
 
 resource "null_resource" "executar_script" {
@@ -41,23 +41,23 @@ resource "aws_instance" "teste_servidor" {
   associate_public_ip_address = true
 
   provisioner "file" {
-    source      = "/terraform/EC2/instalação-docker.sh"
-    destination = "instalação-docker.sh"
+    source      = "/home/souza/terraform/EC2/docker.py"
+    destination = "docker.py"
   }
+
   connection {
     type        = "ssh"
     host        = self.public_ip
     user        = "ubuntu"
-    private_key = file("/terraform/EC2/aws_key")
+    private_key = file("/home/souza/terraform/EC2/aws_key")
     timeout     = "1m"
   }
   provisioner "remote-exec" {
     inline = [
-      "chmod u+x instalação-docker.sh",
-      "./instalação-docker.sh"
+      "python3 docker.py"
     ]
   }
-  
+
   tags = {
     Name = "UbuntuTeste"
   }
