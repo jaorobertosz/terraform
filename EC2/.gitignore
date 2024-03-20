@@ -22,5 +22,6 @@ rad.json
 TestResults.xml
 #Terraform
 *.terraform
-.tfstate
-.tfstate.backup
+*.tfstate
+*.tfstate.backup
+*.lock
