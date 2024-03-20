@@ -24,4 +24,4 @@ TestResults.xml
 *.terraform
 *.tfstate
 *.tfstate.backup
-*.lock
+*.terraform.lock.hcl
